@@ -1,0 +1,10 @@
+.word-list-container {
+    width: 50%;
+    max-height: 200px;
+    border: 1px black solid;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: hidden;
+    font-size: 1.2em;
+}
