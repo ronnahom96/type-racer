@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 
-export const useTimer = (initialValue: number): number => {
+export const useTimer = (
+  initialValue: number
+): [number, boolean, (value: boolean) => void] => {
   const [timer, setTimer] = useState(initialValue);
+  const [isTimerActive, setIsTimerActive] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // TODO: need to think how to send event when it finish
       setTimer((prevTimeVal) =>
         prevTimeVal > 0 ? prevTimeVal - 1 : prevTimeVal
       );
@@ -16,5 +18,11 @@ export const useTimer = (initialValue: number): number => {
     };
   }, []);
 
-  return timer;
+  useEffect(() => {
+    if (timer === 0) {
+      setIsTimerActive(true);
+    }
+  }, [timer]);
+
+  return [timer, isTimerActive, setIsTimerActive];
 };
