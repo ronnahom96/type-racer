@@ -5,7 +5,10 @@ export const useTimer = (initialValue: number): number => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimer((prevTimeVal) => prevTimeVal - 1);
+      // TODO: need to think how to send event when it finish
+      setTimer((prevTimeVal) =>
+        prevTimeVal > 0 ? prevTimeVal - 1 : prevTimeVal
+      );
     }, 1000);
 
     return () => {
