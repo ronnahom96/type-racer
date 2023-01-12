@@ -1,5 +1,5 @@
 import React from "react";
-import Statistics from "../statistics/statistics";
+import Statistics from "../statistics/Statistics";
 import "./gameOver.css";
 
 interface GameOverProps {

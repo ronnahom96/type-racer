@@ -1,8 +1,8 @@
 import React from "react";
 import "./App.css";
 import words from "./assets/words.json";
-import GameOver from "./components/gameOver/gameOver";
-import WordList from "./components/wordList/wordList";
+import GameOver from "./components/gameOver/GameOver";
+import WordList from "./components/wordList/WordList";
 import { useTimer } from "./hooks/useTimer";
 
 const App: React.FC = () => {
