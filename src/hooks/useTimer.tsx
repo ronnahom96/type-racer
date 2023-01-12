@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export const useTimer = (
   initialValue: number
-): [number, boolean, (value: boolean) => void] => {
+): [number, boolean, () => void] => {
   const [timer, setTimer] = useState(initialValue);
   const [isTimerActive, setIsTimerActive] = useState(true);
 
@@ -20,9 +20,14 @@ export const useTimer = (
 
   useEffect(() => {
     if (timer === 0) {
-      setIsTimerActive(true);
+      setIsTimerActive(false);
     }
   }, [timer]);
 
-  return [timer, isTimerActive, setIsTimerActive];
+  const startOverTimer = () => {
+    setTimer(initialValue);
+    setIsTimerActive(true);
+  }
+
+  return [timer, isTimerActive, startOverTimer];
 };
