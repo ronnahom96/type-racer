@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 interface TimerProps {
-  isGameActive: string;
+  isGameActive: boolean;
   seconds: number;
-  startTimer: () => void;
 }
 
 const Timer: React.FC<TimerProps> = ({ isGameActive, seconds }) => {
@@ -13,9 +12,7 @@ const Timer: React.FC<TimerProps> = ({ isGameActive, seconds }) => {
     if (!isGameActive) return;
 
     const interval = setInterval(() => {
-      setTimer((prevTimeVal) =>
-        prevTimeVal > 0 ? prevTimeVal - 1 : prevTimeVal
-      );
+      setTimer((prevTimeVal) => (prevTimeVal > 0 ? prevTimeVal - 1 : prevTimeVal));
     }, 1000);
 
     return () => {
@@ -23,7 +20,7 @@ const Timer: React.FC<TimerProps> = ({ isGameActive, seconds }) => {
     };
   }, [isGameActive]);
 
-  return <h2 className='timer'>Timer: {timer}</h2>;
+  return <h2 className="timer">Timer: {timer}</h2>;
 };
 
 export default Timer;
