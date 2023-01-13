@@ -52,16 +52,13 @@ const GameHandler: React.FC = () => {
         setInput('');
         break;
       }
-      case 'Enter': {
-        // Todo: enter logic
-        break;
-      }
       case 'Backspace': {
         // Todo: backspace logic
         break;
       }
       default: {
-        // Todo: default
+        setCharIndex(charIndex + 1)
+        setLastChar(key);
         break;
       }
     }
@@ -71,7 +68,7 @@ const GameHandler: React.FC = () => {
     <div className="container">
       <h1 className="title">Type Racer</h1>
       <Timer seconds={INITIAL_SECONDS} isGameActive={isGameActive} finishGame={finishGame} />
-      <WordList currWordIndex={wordIndex} currCharIndex={charIndex} lastChar={input} />
+      <WordList currWordIndex={wordIndex} currCharIndex={charIndex} lastChar={lastChar} />
       <input
         disabled={!isGameActive}
         onKeyDown={handleType}

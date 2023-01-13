@@ -1,19 +1,41 @@
-import React, { useState } from "react";
-import "./wordList.css";
+/* eslint-disable no-unused-vars */
+import React, { useState } from 'react';
+import wordsSource from '../../assets/words.json';
+import './WordList.css';
 
 interface WordListProps {
-  wordList: string[];
+  currWordIndex: number;
+  currCharIndex: number;
+  lastChar: string;
 }
 
-const WordList: React.FC<WordListProps> = ({ wordList }) => {
-  const [sentence, setSentence] = useState(wordList.join(" "));
+const WordList: React.FC<WordListProps> = ({ currWordIndex, currCharIndex, lastChar }) => {
+  const [words, setWords] = useState(wordsSource);
+
+  const getCharClassName = (char: string, wordIndex: number, charIndex: number): string => {
+    if (currCharIndex === charIndex && currWordIndex === wordIndex) {
+      if (char === lastChar) {
+        return 'success';
+      } else {
+        return 'wrong';
+      }
+    }
+
+    return '';
+  };
 
   return (
-    <div className='word-list-container'>
-      {sentence}
-      {/* {wordList.map((word, index) => (
-        <h3 key={index}>{word}</h3>
-      ))} */}
+    <div className="word-list-container">
+      {words.map((word, wordIndex) => (
+        <div key={wordIndex} className="word">
+          {word.split('').map((char, charIndex) => (
+            <span key={charIndex} className={getCharClassName(char, wordIndex, charIndex)}>
+              {char}
+            </span>
+          ))}
+          &nbsp;
+        </div>
+      ))}
     </div>
   );
 };
