@@ -1,15 +1,14 @@
 /* eslint-disable no-unused-vars */
-import React, { KeyboardEvent, useEffect, useRef, useState, useMemo } from 'react';
+import { Box, Button, TextField, Typography } from '@mui/material';
+import React, { KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react';
+import wordsAsset from '../../assets/words.json';
+import { StatisticsData, TypeState } from '../../common/interfaces';
+import { GameStatus } from '../../common/types';
 import Statistics from '../statistics/Statistics';
 import Timer from '../timer/Timer';
 import WordList from '../wordList/WordList';
-import wordsAsset from '../../assets/words.json';
-import { GameStatus } from '../../common/types';
-import './GameHandler.css';
-import { StatisticsData, TypeState } from '../../common/interfaces';
-import { TextField, Button, Typography, Box } from '@mui/material';
 
-const INITIAL_SECONDS = 10;
+const INITIAL_SECONDS = 600;
 
 const GameHandler: React.FC = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>('waiting');
@@ -106,7 +105,7 @@ const GameHandler: React.FC = () => {
 
   return (
     <Box sx={{ margin: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-      <Typography variant="h3" className="title">
+      <Typography variant="h3" className="title" margin={1}>
         Type Racer
       </Typography>
       <Timer seconds={INITIAL_SECONDS} shouldTimerStart={isGameActive()} timeout={endGame} />

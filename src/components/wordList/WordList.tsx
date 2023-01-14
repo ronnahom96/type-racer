@@ -25,3 +25,22 @@ const WordList: React.FC<WordListProps> = ({ words, charClassMap }) => {
 };
 
 export default WordList;
+
+// const wordsElements = () => {
+//   return words.map((word, wordIndex) => {
+//     return (
+//       <Grid key={wordIndex}>
+//         {word.split('').map((char, charIndex) => (
+//           <Typography key={charIndex} className={charClassMap[`${wordIndex},${charIndex}`]}>
+//             {char}
+//           </Typography>
+//         ))}
+//       </Grid>
+//     );
+//   });
+// };
+// return (
+//   <Box sx={{ flexGrow: 1 }} maxWidth="sm">
+//     <Grid container>{wordsElements()}</Grid>
+//   </Box>
+// );

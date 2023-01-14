@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 interface TimerProps {
@@ -31,7 +32,13 @@ const Timer: React.FC<TimerProps> = ({ shouldTimerStart, seconds, timeout }) => 
     }
   }, [timer]);
 
-  return !shouldTimerStart ? <></> : <h2 className="timer">Timer: {timer}</h2>;
+  return !shouldTimerStart ? (
+    <></>
+  ) : (
+    <Typography variant="h4" margin={1}>
+      Timer: {timer}
+    </Typography>
+  );
 };
 
 export default Timer;
