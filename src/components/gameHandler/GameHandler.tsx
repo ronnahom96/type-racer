@@ -43,11 +43,11 @@ const GameHandler: React.FC = () => {
     setCurrInput('');
   };
 
-  const handleType = (event: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    event.stopPropagation();
     setKeyEvent(event);
-    if (event.key === ' ') {
-      setCurrInput('');
-    }
+
+    if (event.key === ' ') setCurrInput('');
   };
 
   return (
@@ -63,19 +63,16 @@ const GameHandler: React.FC = () => {
           upCorrectChars={() => setCorrectChars((correctChar) => correctChar + 1)}
           upCorrectWords={() => setCorrectWords((correctWords) => correctWords + 1)}
           upIncorrectWords={() => setIncorrectWords((incorrectWords) => incorrectWords + 1)}
-          handleSpaceBarEvent={() => setCurrInput('')}
         />
       )}
       <TextField
         variant="outlined"
         disabled={!isGameActive()}
-        onKeyDown={handleType}
+        onKeyDown={handleKeyDown}
         ref={inputRef}
         value={currInput}
         onChange={(e) => setCurrInput(e.target.value)}
         placeholder="Type here..."
-        className="type-btn"
-        type="text"
       />
       {!isGameActive() && (
         <Box sx={{ margin: 3 }}>

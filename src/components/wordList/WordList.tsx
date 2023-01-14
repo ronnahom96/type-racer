@@ -8,17 +8,9 @@ interface WordListProps {
   upCorrectWords: () => void;
   upIncorrectWords: () => void;
   upCorrectChars: () => void;
-  handleSpaceBarEvent: () => void;
 }
 
-const WordList: React.FC<WordListProps> = ({
-  isGameActive,
-  keyEvent,
-  upCorrectWords,
-  upIncorrectWords,
-  upCorrectChars,
-  handleSpaceBarEvent
-}) => {
+const WordList: React.FC<WordListProps> = ({ isGameActive, keyEvent, upCorrectWords, upIncorrectWords, upCorrectChars }) => {
   const [wordIndex, setWordIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [charClassMap, setCharClassMap] = useState<Record<string, string>>({});
@@ -34,10 +26,6 @@ const WordList: React.FC<WordListProps> = ({
       setCharClassMap({});
     }
   }, [isGameActive]);
-
-  const generateWords = () => {
-    setWords(wordsAsset.sort(() => Math.random() - 0.5));
-  };
 
   useEffect(() => {
     if (keyEvent === null) return;
@@ -58,6 +46,10 @@ const WordList: React.FC<WordListProps> = ({
     }
   }, [keyEvent]);
 
+  const generateWords = () => {
+    setWords(wordsAsset.sort(() => Math.random() - 0.5));
+  };
+
   const handleDefaultType = () => {
     let className = '';
     if (isGameActive && words[wordIndex] && words[wordIndex][charIndex] === keyEvent?.key) {
@@ -68,18 +60,18 @@ const WordList: React.FC<WordListProps> = ({
     }
 
     setLastWord((setLastWord) => setLastWord + keyEvent?.key);
-    paintChar(wordIndex, charIndex, className);
+    updateCharClassMap(wordIndex, charIndex, className);
     setCharIndex((charIndex) => charIndex + 1);
   };
 
-  const paintChar = (wordIndex: number, charIndex: number, className: string) => {
+  const updateCharClassMap = (wordIndex: number, charIndex: number, className: string) => {
     setCharClassMap((charClassMap) => ({ ...charClassMap, [`${wordIndex},${charIndex}`]: className }));
   };
 
   const handleBackspace = () => {
     setLastWord((lastWord) => lastWord.substring(0, lastWord.length - 1));
     setCharIndex((charIndex) => charIndex - 1);
-    paintChar(wordIndex, charIndex - 1, '');
+    updateCharClassMap(wordIndex, charIndex - 1, '');
   };
 
   const handleSpaceBar = () => {
@@ -89,14 +81,13 @@ const WordList: React.FC<WordListProps> = ({
       upIncorrectWords();
       const wordLength = words[wordIndex].length;
       for (let i = 0; i < wordLength; i++) {
-        paintChar(wordIndex, i, 'wrong');
+        updateCharClassMap(wordIndex, i, 'wrong');
       }
     }
 
     setLastWord('');
     setCharIndex(0);
     setWordIndex((wordIndex) => wordIndex + 1);
-    handleSpaceBarEvent();
   };
 
   const getClassByMap = (wordIndex: number, charIndex: number) => charClassMap[`${wordIndex},${charIndex}`];
