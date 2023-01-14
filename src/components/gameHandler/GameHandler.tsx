@@ -58,45 +58,55 @@ const GameHandler: React.FC = () => {
   const handleType = ({ key }: KeyboardEvent<HTMLInputElement>) => {
     switch (key) {
       case ' ': {
-        checkWord();
-        setTypeState((typeState) => ({ ...typeState, wordIndex: typeState.wordIndex + 1, charIndex: -1, lastChar: '' }));
-        setInput('');
+        handleSpaceBar();
         break;
       }
       case 'Backspace': {
-        setTypeState((typeState) => ({ ...typeState, charIndex: typeState.charIndex - 1, lastChar: '' }));
+        handleBackspace();
         break;
       }
       default: {
-        setTypeState((typeState) => ({ ...typeState, charIndex: typeState.charIndex + 1, lastChar: key }));
-        let className = '';
-        if (words[typeState.wordIndex][typeState.charIndex + 1] === key) {
-          className = 'success';
-          upCorrectChar();
-        } else {
-          className = 'wrong';
-        }
-
-        setCharClassMap((charClassMap) => ({ ...charClassMap, [`${typeState.wordIndex},${typeState.charIndex + 1}`]: className }));
+        handleDefaultType(key);
         break;
       }
     }
   };
 
-  const checkWord = () => {
+  const handleDefaultType = (key: string) => {
+    let className = '';
+    setTypeState((typeState) => ({ ...typeState, charIndex: typeState.charIndex + 1, lastChar: key }));
+    if (words[typeState.wordIndex][typeState.charIndex + 1] === key) {
+      className = 'success';
+      upCorrectChar();
+    } else {
+      className = 'wrong';
+    }
+
+    paintChar(typeState.wordIndex, typeState.charIndex + 1, className);
+  };
+
+  const paintChar = (wordIndex: number, charIndex: number, className: string) => {
+    setCharClassMap((charClassMap) => ({ ...charClassMap, [`${wordIndex},${charIndex}`]: className }));
+  };
+
+  const handleBackspace = () => {
+    setTypeState((typeState) => ({ ...typeState, charIndex: typeState.charIndex - 1, lastChar: '' }));
+    paintChar(typeState.wordIndex, typeState.charIndex, '');
+  };
+
+  const handleSpaceBar = () => {
     if (words[typeState.wordIndex] === input.trim()) {
       setStatisticsData((statisticsData) => ({ ...statisticsData, correctWords: statisticsData.correctWords + 1 }));
     } else {
       setStatisticsData((statisticsData) => ({ ...statisticsData, incorrectWords: statisticsData.incorrectWords + 1 }));
-      setCharClassMap((charClassMap) => {
-        const wordLength = words[typeState.wordIndex].length;
-        const newCharClassMap = structuredClone(charClassMap);
-        for (let i = 0; i < wordLength; i++) {
-          newCharClassMap[`${typeState.wordIndex},${i}`] = 'wrong';
-        }
-        return newCharClassMap;
-      });
+      const wordLength = words[typeState.wordIndex].length;
+      for (let i = 0; i < wordLength; i++) {
+        paintChar(typeState.wordIndex, i, 'wrong');
+      }
     }
+
+    setTypeState((typeState) => ({ ...typeState, wordIndex: typeState.wordIndex + 1, charIndex: -1, lastChar: '' }));
+    setInput('');
   };
 
   const upCorrectChar = () => {
