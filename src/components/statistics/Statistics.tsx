@@ -3,14 +3,14 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import { StatisticsData } from '../../common/interfaces';
 
 interface StatisticsProps {
-  statisticsData: StatisticsData;
+  correctChars: number;
+  correctWords: number;
+  incorrectWords: number;
 }
 
-const Statistics: React.FC<StatisticsProps> = ({ statisticsData }) => {
-  const { correctChars, correctWords, incorrectWords } = statisticsData;
+const Statistics: React.FC<StatisticsProps> = ({ correctChars, correctWords, incorrectWords }) => {
   return (
     <Card sx={{ minWidth: 400, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
       <CardContent>

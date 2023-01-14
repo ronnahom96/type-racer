@@ -5,10 +5,10 @@ import React, { useEffect, useState } from 'react';
 interface TimerProps {
   shouldTimerStart: boolean;
   seconds: number;
-  timeout: () => void;
+  timeoutHandler: () => void;
 }
 
-const Timer: React.FC<TimerProps> = ({ shouldTimerStart, seconds, timeout }) => {
+const Timer: React.FC<TimerProps> = ({ shouldTimerStart, seconds, timeoutHandler }) => {
   const [timer, setTimer] = useState(seconds);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Timer: React.FC<TimerProps> = ({ shouldTimerStart, seconds, timeout }) => 
 
   useEffect(() => {
     if (timer === 0) {
-      timeout();
+      timeoutHandler();
     }
   }, [timer]);
 

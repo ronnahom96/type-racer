@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, TextField, Typography } from '@mui/material';
-import React, { KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react';
-import wordsAsset from '../../assets/words.json';
-import { StatisticsData, TypeState } from '../../common/interfaces';
+import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { GameStatus } from '../../common/types';
 import Statistics from '../statistics/Statistics';
 import Timer from '../timer/Timer';
@@ -12,18 +10,13 @@ const INITIAL_SECONDS = 60;
 
 const GameHandler: React.FC = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>('waiting');
-  const inputRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState('');
-  const [statisticsData, setStatisticsData] = useState<StatisticsData>({
-    correctChars: 0,
-    correctWords: 0,
-    incorrectWords: 0
-  });
-  const [typeState, setTypeState] = useState<TypeState>({ wordIndex: 0, charIndex: 0, lastChar: '' });
-  const [charClassMap, setCharClassMap] = useState<Record<string, string>>({});
-  const words = useMemo(() => wordsAsset.sort(() => Math.random() - 0.5), [gameStatus]);
+  const [correctChars, setCorrectChars] = useState(0);
+  const [correctWords, setCorrectWords] = useState(0);
+  const [incorrectWords, setIncorrectWords] = useState(0);
+  const [keyEvent, setKeyEvent] = useState<KeyboardEvent<HTMLInputElement> | null>(null);
 
-  const isGameActive = () => gameStatus === 'active';
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isGameActive()) {
@@ -31,23 +24,19 @@ const GameHandler: React.FC = () => {
     }
   }, [gameStatus]);
 
+  const isGameActive = () => gameStatus === 'active';
   const startGame = () => {
     if (!isGameActive()) {
       setGameStatus('active');
-      resetGameData();
+      setKeyEvent(null);
+      resetGameStats();
     }
   };
 
-  const resetGameData = () => {
-    setTypeState((typeState) => ({ ...typeState, wordIndex: 0, charIndex: -1, lastChar: '' }));
-    setCharClassMap({});
-    setStatisticsData((statisticsData) => ({
-      ...statisticsData,
-      correctChars: 0,
-      correctWords: 0,
-      incorrectChars: 0,
-      incorrectWords: 0
-    }));
+  const resetGameStats = () => {
+    setCorrectChars(0);
+    setCorrectWords(0);
+    setIncorrectWords(0);
   };
 
   const endGame = () => {
@@ -55,62 +44,11 @@ const GameHandler: React.FC = () => {
     setInput('');
   };
 
-  const handleType = ({ key }: KeyboardEvent<HTMLInputElement>) => {
-    switch (key) {
-      case ' ': {
-        handleSpaceBar();
-        break;
-      }
-      case 'Backspace': {
-        handleBackspace();
-        break;
-      }
-      default: {
-        handleDefaultType(key);
-        break;
-      }
+  const handleType = (event: KeyboardEvent<HTMLInputElement>) => {
+    setKeyEvent(event);
+    if (event.key === ' ') {
+      setInput('');
     }
-  };
-
-  const handleDefaultType = (key: string) => {
-    let className = '';
-    setTypeState((typeState) => ({ ...typeState, charIndex: typeState.charIndex + 1, lastChar: key }));
-    if (words[typeState.wordIndex][typeState.charIndex + 1] === key) {
-      className = 'success';
-      upCorrectChar();
-    } else {
-      className = 'wrong';
-    }
-
-    paintChar(typeState.wordIndex, typeState.charIndex + 1, className);
-  };
-
-  const paintChar = (wordIndex: number, charIndex: number, className: string) => {
-    setCharClassMap((charClassMap) => ({ ...charClassMap, [`${wordIndex},${charIndex}`]: className }));
-  };
-
-  const handleBackspace = () => {
-    setTypeState((typeState) => ({ ...typeState, charIndex: typeState.charIndex - 1, lastChar: '' }));
-    paintChar(typeState.wordIndex, typeState.charIndex, '');
-  };
-
-  const handleSpaceBar = () => {
-    if (words[typeState.wordIndex] === input.trim()) {
-      setStatisticsData((statisticsData) => ({ ...statisticsData, correctWords: statisticsData.correctWords + 1 }));
-    } else {
-      setStatisticsData((statisticsData) => ({ ...statisticsData, incorrectWords: statisticsData.incorrectWords + 1 }));
-      const wordLength = words[typeState.wordIndex].length;
-      for (let i = 0; i < wordLength; i++) {
-        paintChar(typeState.wordIndex, i, 'wrong');
-      }
-    }
-
-    setTypeState((typeState) => ({ ...typeState, wordIndex: typeState.wordIndex + 1, charIndex: -1, lastChar: '' }));
-    setInput('');
-  };
-
-  const upCorrectChar = () => {
-    setStatisticsData((statisticsData) => ({ ...statisticsData, correctChars: statisticsData.correctChars + 1 }));
   };
 
   return (
@@ -118,23 +56,27 @@ const GameHandler: React.FC = () => {
       <Typography style={{ color: '#1565c0' }} variant="h3" className="title" margin={1}>
         Type Racer
       </Typography>
-      <Timer seconds={INITIAL_SECONDS} shouldTimerStart={isGameActive()} timeout={endGame} />
+      <Timer seconds={INITIAL_SECONDS} shouldTimerStart={isGameActive()} timeoutHandler={endGame} />
       {gameStatus === 'active' && (
-        <>
-          <WordList charClassMap={charClassMap} words={words} />
-          <TextField
-            variant="outlined"
-            disabled={!isGameActive()}
-            onKeyDown={handleType}
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type here..."
-            className="type-btn"
-            type="text"
-          />
-        </>
+        <WordList
+          keyEvent={keyEvent}
+          isGameActive={isGameActive()}
+          upCorrectChars={() => setCorrectChars((correctChar) => correctChar + 1)}
+          upCorrectWords={() => setCorrectWords((correctWords) => correctWords + 1)}
+          upIncorrectWords={() => setIncorrectWords((incorrectWords) => incorrectWords + 1)}
+        />
       )}
+      <TextField
+        variant="outlined"
+        disabled={!isGameActive()}
+        onKeyDown={handleType}
+        ref={inputRef}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Type here..."
+        className="type-btn"
+        type="text"
+      />
       {!isGameActive() && (
         <Box sx={{ margin: 3 }}>
           <Button variant="contained" placeholder="Start Game" onClick={startGame} type="button">
@@ -142,7 +84,9 @@ const GameHandler: React.FC = () => {
           </Button>
         </Box>
       )}
-      {gameStatus === 'not active' && <Statistics statisticsData={statisticsData} />}
+      {gameStatus === 'not active' && (
+        <Statistics correctChars={correctChars} correctWords={correctWords} incorrectWords={incorrectWords} />
+      )}
     </Box>
   );
 };
