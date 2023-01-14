@@ -1,35 +1,37 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 
 interface TimerProps {
-  isGameActive: boolean;
+  shouldTimerStart: boolean;
   seconds: number;
-  finishGame: () => void;
+  timeout: () => void;
 }
 
-const Timer: React.FC<TimerProps> = ({ isGameActive, seconds, finishGame }) => {
+const Timer: React.FC<TimerProps> = ({ shouldTimerStart, seconds, timeout }) => {
   const [timer, setTimer] = useState(seconds);
 
   useEffect(() => {
-    if (isGameActive) {
+    if (shouldTimerStart === true) {
       const interval = setInterval(() => {
         setTimer((prevTimeVal) => {
-          if (prevTimeVal > 0) {
-            return prevTimeVal - 1;
-          } else {
+          if (prevTimeVal <= 0) {
             clearInterval(interval);
-            finishGame();
             return seconds;
+          } else {
+            return prevTimeVal - 1;
           }
         });
       }, 1000);
     }
-  }, [isGameActive]);
+  }, [shouldTimerStart]);
 
-  return (
-    <h2 hidden={!isGameActive} className="timer">
-      Timer: {timer}
-    </h2>
-  );
+  useEffect(() => {
+    if (timer === 0) {
+      timeout();
+    }
+  }, [timer]);
+
+  return !shouldTimerStart ? <></> : <h2 className="timer">Timer: {timer}</h2>;
 };
 
 export default Timer;
