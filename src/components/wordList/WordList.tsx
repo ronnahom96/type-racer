@@ -9,9 +9,17 @@ interface WordListProps {
   upCorrectWords: () => void;
   upIncorrectWords: () => void;
   upCorrectChars: () => void;
+  handleSpaceBarEvent: () => void;
 }
 
-const WordList: React.FC<WordListProps> = ({ isGameActive, keyEvent, upCorrectWords, upIncorrectWords, upCorrectChars }) => {
+const WordList: React.FC<WordListProps> = ({
+  isGameActive,
+  keyEvent,
+  upCorrectWords,
+  upIncorrectWords,
+  upCorrectChars,
+  handleSpaceBarEvent
+}) => {
   const [wordIndex, setWordIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [charClassMap, setCharClassMap] = useState<Record<string, string>>({});
@@ -53,7 +61,7 @@ const WordList: React.FC<WordListProps> = ({ isGameActive, keyEvent, upCorrectWo
 
   const handleDefaultType = () => {
     let className = '';
-    if (isGameActive && words[wordIndex] && words[wordIndex][charIndex] === keyEvent?.key && charIndex < words[wordIndex].length) {
+    if (isGameActive && words[wordIndex] && words[wordIndex][charIndex] === keyEvent?.key) {
       className = 'success';
       upCorrectChars();
     } else {
@@ -89,6 +97,7 @@ const WordList: React.FC<WordListProps> = ({ isGameActive, keyEvent, upCorrectWo
     setLastWord('');
     setCharIndex(0);
     setWordIndex((wordIndex) => wordIndex + 1);
+    handleSpaceBarEvent();
   };
 
   const getClassByMap = (wordIndex: number, charIndex: number) => charClassMap[`${wordIndex},${charIndex}`];

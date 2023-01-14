@@ -10,7 +10,7 @@ const INITIAL_SECONDS = 60;
 
 const GameHandler: React.FC = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>('waiting');
-  const [input, setInput] = useState('');
+  const [currInput, setCurrInput] = useState('');
   const [correctChars, setCorrectChars] = useState(0);
   const [correctWords, setCorrectWords] = useState(0);
   const [incorrectWords, setIncorrectWords] = useState(0);
@@ -41,13 +41,13 @@ const GameHandler: React.FC = () => {
 
   const endGame = () => {
     setGameStatus('not active');
-    setInput('');
+    setCurrInput('');
   };
 
   const handleType = (event: KeyboardEvent<HTMLInputElement>) => {
     setKeyEvent(event);
     if (event.key === ' ') {
-      setInput('');
+      setCurrInput('');
     }
   };
 
@@ -64,6 +64,7 @@ const GameHandler: React.FC = () => {
           upCorrectChars={() => setCorrectChars((correctChar) => correctChar + 1)}
           upCorrectWords={() => setCorrectWords((correctWords) => correctWords + 1)}
           upIncorrectWords={() => setIncorrectWords((incorrectWords) => incorrectWords + 1)}
+          handleSpaceBarEvent={() => setCurrInput('')}
         />
       )}
       <TextField
@@ -71,8 +72,8 @@ const GameHandler: React.FC = () => {
         disabled={!isGameActive()}
         onKeyDown={handleType}
         ref={inputRef}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        value={currInput}
+        onChange={(e) => setCurrInput(e.target.value)}
         placeholder="Type here..."
         className="type-btn"
         type="text"
