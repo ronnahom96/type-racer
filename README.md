@@ -1,6 +1,6 @@
-# Type Racer
+# Type Racer - test your writing speed
 
-## This project test your writing speed.
+## Tech Stack React, Typescript, Material UI.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
