@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Button, TextField, Typography } from '@mui/material';
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { GameStatus } from '../../common/types';

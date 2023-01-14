@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, KeyboardEvent } from 'react';
 import wordsAsset from '../../assets/words.json';
 import './WordList.css';
