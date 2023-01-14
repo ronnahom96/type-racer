@@ -4,14 +4,13 @@
   margin: 1%;
   padding: 0.5%;
   width: 50%;
-  max-height: 100px;
+  max-height: 400px;
   font-size: 1.6rem;
-  border: 8px solid;
+  border: 8px solid lightblue;
   padding: 1rem;
   flex-direction: row;
   flex-wrap: wrap;
   overflow-y: auto;
-  -webkit-font-smoothing: antialiased;
 }
 
 .success {

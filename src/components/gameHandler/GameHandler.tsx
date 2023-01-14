@@ -8,7 +8,7 @@ import Statistics from '../statistics/Statistics';
 import Timer from '../timer/Timer';
 import WordList from '../wordList/WordList';
 
-const INITIAL_SECONDS = 600;
+const INITIAL_SECONDS = 60;
 
 const GameHandler: React.FC = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>('waiting');
@@ -115,7 +115,7 @@ const GameHandler: React.FC = () => {
 
   return (
     <Box sx={{ margin: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-      <Typography variant="h3" className="title" margin={1}>
+      <Typography style={{ color: '#1565c0' }} variant="h3" className="title" margin={1}>
         Type Racer
       </Typography>
       <Timer seconds={INITIAL_SECONDS} shouldTimerStart={isGameActive()} timeout={endGame} />
@@ -135,12 +135,14 @@ const GameHandler: React.FC = () => {
           />
         </>
       )}
-      <Box sx={{ margin: 3 }}>
-        <Button variant="contained" disabled={isGameActive()} placeholder="Start Game" onClick={startGame} type="button">
-          Start Game
-        </Button>
-      </Box>
-      {<Statistics statisticsData={statisticsData} />}
+      {!isGameActive() && (
+        <Box sx={{ margin: 3 }}>
+          <Button variant="contained" placeholder="Start Game" onClick={startGame} type="button">
+            Start Game
+          </Button>
+        </Box>
+      )}
+      {gameStatus === 'not active' && <Statistics statisticsData={statisticsData} />}
     </Box>
   );
 };
