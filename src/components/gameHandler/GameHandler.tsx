@@ -7,6 +7,7 @@ import wordsAsset from '../../assets/words.json';
 import { GameStatus } from '../../common/types';
 import './GameHandler.css';
 import { StatisticsData, TypeState } from '../../common/interfaces';
+import { TextField, Button, Typography, Box } from '@mui/material';
 
 const INITIAL_SECONDS = 10;
 
@@ -104,13 +105,16 @@ const GameHandler: React.FC = () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="title">Type Racer</h1>
+    <Box sx={{ margin: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+      <Typography variant="h3" className="title">
+        Type Racer
+      </Typography>
       <Timer seconds={INITIAL_SECONDS} shouldTimerStart={isGameActive()} timeout={endGame} />
       {gameStatus === 'active' && (
         <>
           <WordList charClassMap={charClassMap} words={words} />
-          <input
+          <TextField
+            variant="outlined"
             disabled={!isGameActive()}
             onKeyDown={handleType}
             ref={inputRef}
@@ -122,16 +126,13 @@ const GameHandler: React.FC = () => {
           />
         </>
       )}
-      <input
-        disabled={isGameActive()}
-        placeholder="Start Game"
-        onClick={startGame}
-        className="start-btn"
-        type="button"
-        value="Start` Game"
-      />
-      {gameStatus === 'not active' && <Statistics statisticsData={statisticsData} />}
-    </div>
+      <Box sx={{ margin: 3 }}>
+        <Button variant="contained" disabled={isGameActive()} placeholder="Start Game" onClick={startGame} type="button">
+          Start Game
+        </Button>
+      </Box>
+      {<Statistics statisticsData={statisticsData} />}
+    </Box>
   );
 };
 
