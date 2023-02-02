@@ -1,5 +1,5 @@
 import React, { useEffect, useState, KeyboardEvent } from 'react';
-import wordsAsset from '../../assets/words.json';
+import WORDS_ASSET from '../../assets/words.json';
 import './WordList.css';
 
 interface WordListProps {
@@ -15,7 +15,7 @@ const WordList: React.FC<WordListProps> = ({ isGameActive, keyEvent, upCorrectWo
   const [charIndex, setCharIndex] = useState(0);
   const [charClassMap, setCharClassMap] = useState<Record<string, string>>({});
   const [lastWord, setLastWord] = useState('');
-  const [words, setWords] = useState(wordsAsset);
+  const [words, setWords] = useState(WORDS_ASSET);
 
   useEffect(() => {
     if (isGameActive) {
@@ -28,7 +28,7 @@ const WordList: React.FC<WordListProps> = ({ isGameActive, keyEvent, upCorrectWo
   }, [isGameActive]);
 
   useEffect(() => {
-    if (keyEvent === null) return;
+    if (!keyEvent) return;
 
     switch (keyEvent.key) {
       case ' ': {
@@ -47,7 +47,7 @@ const WordList: React.FC<WordListProps> = ({ isGameActive, keyEvent, upCorrectWo
   }, [keyEvent]);
 
   const generateWords = () => {
-    setWords(wordsAsset.sort(() => Math.random() - 0.5));
+    setWords(WORDS_ASSET.sort(() => Math.random() - 0.5));
   };
 
   const handleDefaultType = () => {

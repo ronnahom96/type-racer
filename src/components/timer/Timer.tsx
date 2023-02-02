@@ -2,16 +2,16 @@ import { Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 interface TimerProps {
-  shouldTimerStart: boolean;
+  isShouldTimerStart: boolean;
   seconds: number;
   timeoutHandler: () => void;
 }
 
-const Timer: React.FC<TimerProps> = ({ shouldTimerStart, seconds, timeoutHandler }) => {
+const Timer: React.FC<TimerProps> = ({ isShouldTimerStart, seconds, timeoutHandler }) => {
   const [timer, setTimer] = useState(seconds);
 
   useEffect(() => {
-    if (shouldTimerStart === true) {
+    if (isShouldTimerStart) {
       const interval = setInterval(() => {
         setTimer((prevTimeVal) => {
           if (prevTimeVal <= 0) {
@@ -23,7 +23,7 @@ const Timer: React.FC<TimerProps> = ({ shouldTimerStart, seconds, timeoutHandler
         });
       }, 1000);
     }
-  }, [shouldTimerStart]);
+  }, [isShouldTimerStart]);
 
   useEffect(() => {
     if (timer === 0) {
@@ -31,12 +31,12 @@ const Timer: React.FC<TimerProps> = ({ shouldTimerStart, seconds, timeoutHandler
     }
   }, [timer]);
 
-  return !shouldTimerStart ? (
-    <></>
-  ) : (
+  return isShouldTimerStart ? (
     <Typography variant="h4" margin={1}>
       Timer: {timer}
     </Typography>
+  ) : (
+    <></>
   );
 };
 

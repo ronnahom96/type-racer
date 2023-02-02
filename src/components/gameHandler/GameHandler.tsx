@@ -55,7 +55,7 @@ const GameHandler: React.FC = () => {
       <Typography style={{ color: '#1565c0' }} variant="h3" className="title" margin={1}>
         Type Racer
       </Typography>
-      <Timer seconds={INITIAL_SECONDS} shouldTimerStart={isGameActive()} timeoutHandler={endGame} />
+      <Timer seconds={INITIAL_SECONDS} isShouldTimerStart={isGameActive()} timeoutHandler={endGame} />
       {gameStatus === 'active' && (
         <WordList
           keyEvent={keyEvent}
@@ -67,7 +67,6 @@ const GameHandler: React.FC = () => {
       )}
       <TextField
         variant="outlined"
-        disabled={!isGameActive()}
         onKeyDown={handleKeyDown}
         ref={inputRef}
         value={currInput}
