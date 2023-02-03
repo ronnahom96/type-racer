@@ -14,7 +14,7 @@ const INITIAL_SECONDS = 60;
 const GameHandler: React.FC = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Waiting);
   const [userInput, setUserInput] = useState('');
-  const [words, setWords] = useState(WORDS_ASSET.sort(() => Math.random() - 0.5));
+  const [words, setWords] = useState(WORDS_ASSET);
 
   const [typingResult, setTypingResult] = useState<TypingResult>({
     correctWords: new Set(),
