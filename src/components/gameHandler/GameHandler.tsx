@@ -7,12 +7,15 @@ import Statistics from '../statistics/Statistics';
 import Timer from '../timer/Timer';
 import UserInput from '../userInput/userInput';
 import WordList from '../wordList/WordList';
+import WORDS_ASSET from '../../assets/words.json';
 
 const INITIAL_SECONDS = 60;
 
 const GameHandler: React.FC = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Waiting);
   const [userInput, setUserInput] = useState('');
+  const [words, setWords] = useState(WORDS_ASSET.sort(() => Math.random() - 0.5));
+
   const [typingResult, setTypingResult] = useState<TypingResult>({
     correctWords: new Set(),
     inCorrectWords: new Set(),
@@ -39,6 +42,7 @@ const GameHandler: React.FC = () => {
         inCorrectWords: new Set(),
         correctCharsNumber: 0
       });
+      setWords(WORDS_ASSET.sort(() => Math.random() - 0.5));
     }
   };
 
@@ -60,7 +64,7 @@ const GameHandler: React.FC = () => {
       <TypingResultContext.Provider value={{ typingResult, updateTypingResult }}>
         {isGameActive ? (
           <>
-            <WordList input={userInput} isGameActive={isGameActive} />
+            <WordList words={words} input={userInput} />
             <UserInput isGameActive={isGameActive} setInput={handleSetCurrInput} input={userInput} />
           </>
         ) : (

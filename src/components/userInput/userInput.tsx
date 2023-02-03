@@ -17,14 +17,7 @@ const UserInput: React.FC<UserInputProps> = ({ isGameActive, input, setInput }) 
   }, [isGameActive]);
 
   return (
-    <TextField
-      variant="outlined"
-      disabled={!isGameActive}
-      ref={inputRef}
-      value={input}
-      onChange={setInput}
-      placeholder="Type here..."
-    />
+    <TextField variant="outlined" disabled={!isGameActive} ref={inputRef} value={input} onChange={setInput} placeholder="Type here..." />
   );
 };
 

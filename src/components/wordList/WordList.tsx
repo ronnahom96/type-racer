@@ -1,17 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import WORDS_ASSET from '../../assets/words.json';
 import { TypingResultContext } from '../../common/typingResultContext';
 import Word from '../word/Word';
 import './WordList.css';
 
 interface WordListProps {
-  isGameActive: boolean;
+  words: string[]
   input: string;
 }
 
-const words = WORDS_ASSET.sort(() => Math.random() - 0.5);
-
-const WordList: React.FC<WordListProps> = ({ input }) => {
+const WordList: React.FC<WordListProps> = ({ words, input }) => {
   const [wordIndex, setWordIndex] = useState(0);
   const { typingResult, updateTypingResult } = useContext(TypingResultContext);
 
