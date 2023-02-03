@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import WORDS_ASSET from '../../assets/words.json';
 import { TypingResultContext } from '../../common/typingResultContext';
 import Word from '../word/Word';
@@ -9,9 +9,10 @@ interface WordListProps {
   input: string;
 }
 
+const words = WORDS_ASSET.sort(() => Math.random() - 0.5);
+
 const WordList: React.FC<WordListProps> = ({ input }) => {
   const [wordIndex, setWordIndex] = useState(0);
-  const [words] = useState(WORDS_ASSET.sort(() => Math.random() - 0.5));
   const { typingResult, updateTypingResult } = useContext(TypingResultContext);
 
   const handleSpaceBar = useCallback(() => {
