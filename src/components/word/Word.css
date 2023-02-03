@@ -1,0 +1,11 @@
+.current-word {
+  background-color: lightblue;
+}
+
+.success {
+  color: #02ee41;
+}
+
+.wrong {
+  color: #fc3308;
+}

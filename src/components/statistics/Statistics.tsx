@@ -1,15 +1,15 @@
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { useContext } from 'react';
+import { TypingResultContext } from '../../common/typingResultContext';
 
-interface StatisticsProps {
-  correctChars: number;
-  correctWords: number;
-  incorrectWords: number;
-}
+const Statistics: React.FC = () => {
+  const { typingResult } = useContext(TypingResultContext);
+  const { correctWords, correctCharsNumber, inCorrectWords } = typingResult;
+  const correctWordsSize = correctWords.size;
+  const inCorrectWordsSize = inCorrectWords.size;
 
-const Statistics: React.FC<StatisticsProps> = ({ correctChars, correctWords, incorrectWords }) => {
   return (
     <Card sx={{ minWidth: 400, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
       <CardContent>
@@ -17,17 +17,17 @@ const Statistics: React.FC<StatisticsProps> = ({ correctChars, correctWords, inc
           Game Stats
         </Typography>
         <Typography variant="h5" component="div">
-          WPM (word per minutes): {correctWords}
+          WPM (word per minutes): {correctWordsSize}
         </Typography>
         <Typography variant="h5" component="div">
-          CPM (char per minutes): {correctChars}
+          CPM (char per minutes): {correctCharsNumber}
         </Typography>
-        {correctWords > 0 && (
+        {correctWordsSize > 0 && (
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Accuracy: {Math.round((correctWords / (incorrectWords + correctWords)) * 100)}%
+            Accuracy: {Math.round((correctWordsSize / (inCorrectWordsSize + correctWordsSize)) * 100)}%
           </Typography>
         )}
-        <Typography variant="body2">Mistakes: incorrectWords: {incorrectWords}</Typography>
+        <Typography variant="body2">Mistakes: incorrectWords: {inCorrectWordsSize}</Typography>
       </CardContent>
     </Card>
   );

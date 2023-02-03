@@ -1,88 +1,77 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
-import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { GameStatus } from '../../common/types';
+import { Box, Button, Typography } from '@mui/material';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { GameStatus } from '../../common/enums';
+import { TypingResult } from '../../common/interfaces';
+import { TypingResultContext } from '../../common/typingResultContext';
 import Statistics from '../statistics/Statistics';
 import Timer from '../timer/Timer';
+import UserInput from '../userInput/userInput';
 import WordList from '../wordList/WordList';
 
 const INITIAL_SECONDS = 60;
 
 const GameHandler: React.FC = () => {
-  const [gameStatus, setGameStatus] = useState<GameStatus>('waiting');
-  const [currInput, setCurrInput] = useState('');
-  const [correctChars, setCorrectChars] = useState(0);
-  const [correctWords, setCorrectWords] = useState(0);
-  const [incorrectWords, setIncorrectWords] = useState(0);
-  const [keyEvent, setKeyEvent] = useState<KeyboardEvent<HTMLInputElement> | null>(null);
+  const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.Waiting);
+  const [userInput, setUserInput] = useState('');
+  const [typingResult, setTypingResult] = useState<TypingResult>({
+    correctWords: new Set(),
+    inCorrectWords: new Set(),
+    correctCharsNumber: 0
+  });
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const updateTypingResult = (typingResult: TypingResult) => {
+    setTypingResult(typingResult);
+  };
+
+  const isGameActive = gameStatus === GameStatus.Active;
 
   useEffect(() => {
-    if (isGameActive()) {
-      inputRef.current?.focus();
+    if (userInput.at(-1) === ' ') {
+      setUserInput('');
     }
-  }, [gameStatus]);
+  }, [userInput]);
 
-  const isGameActive = () => gameStatus === 'active';
   const startGame = () => {
-    if (!isGameActive()) {
-      setGameStatus('active');
-      setKeyEvent(null);
-      resetGameStats();
+    if (!isGameActive) {
+      setGameStatus(GameStatus.Active);
+      setTypingResult({
+        correctWords: new Set(),
+        inCorrectWords: new Set(),
+        correctCharsNumber: 0
+      });
     }
   };
 
-  const resetGameStats = () => {
-    setCorrectChars(0);
-    setCorrectWords(0);
-    setIncorrectWords(0);
-  };
+  const endGame = useCallback(() => {
+    setGameStatus(GameStatus.NotActive);
+    setUserInput('');
+  }, []);
 
-  const endGame = () => {
-    setGameStatus('not active');
-    setCurrInput('');
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    event.stopPropagation();
-    setKeyEvent(event);
-
-    if (event.key === ' ') setCurrInput('');
-  };
+  const handleSetCurrInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setUserInput(event.target.value);
+  }, []);
 
   return (
     <Box sx={{ margin: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
       <Typography style={{ color: '#1565c0' }} variant="h3" className="title" margin={1}>
         Type Racer
       </Typography>
-      <Timer seconds={INITIAL_SECONDS} isShouldTimerStart={isGameActive()} timeoutHandler={endGame} />
-      {gameStatus === 'active' && (
-        <WordList
-          keyEvent={keyEvent}
-          isGameActive={isGameActive()}
-          upCorrectChars={() => setCorrectChars((correctChar) => correctChar + 1)}
-          upCorrectWords={() => setCorrectWords((correctWords) => correctWords + 1)}
-          upIncorrectWords={() => setIncorrectWords((incorrectWords) => incorrectWords + 1)}
-        />
-      )}
-      <TextField
-        variant="outlined"
-        onKeyDown={handleKeyDown}
-        ref={inputRef}
-        value={currInput}
-        onChange={(e) => setCurrInput(e.target.value)}
-        placeholder="Type here..."
-      />
-      {!isGameActive() && (
-        <Box sx={{ margin: 3 }}>
-          <Button variant="contained" placeholder="Start Game" onClick={startGame} type="button">
-            Start Game
-          </Button>
-        </Box>
-      )}
-      {gameStatus === 'not active' && (
-        <Statistics correctChars={correctChars} correctWords={correctWords} incorrectWords={incorrectWords} />
-      )}
+      <Timer seconds={INITIAL_SECONDS} isShouldTimerStart={isGameActive} timeoutHandler={endGame} />
+      <TypingResultContext.Provider value={{ typingResult, updateTypingResult }}>
+        {isGameActive ? (
+          <>
+            <WordList input={userInput} isGameActive={isGameActive} />
+            <UserInput isGameActive={isGameActive} setInput={handleSetCurrInput} input={userInput} />
+          </>
+        ) : (
+          <Box sx={{ margin: 3 }}>
+            <Button variant="contained" placeholder="Start Game" onClick={startGame} type="button">
+              Start Game
+            </Button>
+          </Box>
+        )}
+        {!isGameActive && gameStatus !== GameStatus.Waiting && <Statistics />}
+      </TypingResultContext.Provider>
     </Box>
   );
 };

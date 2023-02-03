@@ -14,30 +14,28 @@ const Timer: React.FC<TimerProps> = ({ isShouldTimerStart, seconds, timeoutHandl
     if (isShouldTimerStart) {
       const interval = setInterval(() => {
         setTimer((prevTimeVal) => {
-          if (prevTimeVal <= 0) {
+          if (prevTimeVal > 0) {
+            return prevTimeVal - 1;
+          } else {
             clearInterval(interval);
             return seconds;
-          } else {
-            return prevTimeVal - 1;
           }
         });
       }, 1000);
     }
-  }, [isShouldTimerStart]);
+  }, [isShouldTimerStart, seconds]);
 
   useEffect(() => {
     if (timer === 0) {
       timeoutHandler();
     }
-  }, [timer]);
+  }, [timer, timeoutHandler]);
 
   return isShouldTimerStart ? (
     <Typography variant="h4" margin={1}>
       Timer: {timer}
     </Typography>
-  ) : (
-    <></>
-  );
+  ) : null;
 };
 
 export default Timer;

@@ -1,108 +1,70 @@
-import React, { useEffect, useState, KeyboardEvent } from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import WORDS_ASSET from '../../assets/words.json';
+import { TypingResultContext } from '../../common/typingResultContext';
+import Word from '../word/Word';
 import './WordList.css';
 
 interface WordListProps {
   isGameActive: boolean;
-  keyEvent: KeyboardEvent<HTMLInputElement> | null;
-  upCorrectWords: () => void;
-  upIncorrectWords: () => void;
-  upCorrectChars: () => void;
+  input: string;
 }
 
-const WordList: React.FC<WordListProps> = ({ isGameActive, keyEvent, upCorrectWords, upIncorrectWords, upCorrectChars }) => {
+const WordList: React.FC<WordListProps> = ({ isGameActive, input }) => {
   const [wordIndex, setWordIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-  const [charClassMap, setCharClassMap] = useState<Record<string, string>>({});
-  const [lastWord, setLastWord] = useState('');
   const [words, setWords] = useState(WORDS_ASSET);
+  const { typingResult, updateTypingResult } = useContext(TypingResultContext);
 
-  useEffect(() => {
-    if (isGameActive) {
-      generateWords();
-      setWordIndex(0);
-      setCharIndex(0);
-      setLastWord('');
-      setCharClassMap({});
-    }
-  }, [isGameActive]);
-
-  useEffect(() => {
-    if (!keyEvent) return;
-
-    switch (keyEvent.key) {
-      case ' ': {
-        handleSpaceBar();
-        break;
-      }
-      case 'Backspace': {
-        handleBackspace();
-        break;
-      }
-      default: {
-        handleDefaultType();
-        break;
-      }
-    }
-  }, [keyEvent]);
-
-  const generateWords = () => {
-    setWords(WORDS_ASSET.sort(() => Math.random() - 0.5));
-  };
-
-  const handleDefaultType = () => {
-    let className = '';
-    if (isGameActive && words[wordIndex] && words[wordIndex][charIndex] === keyEvent?.key) {
-      className = 'success';
-      upCorrectChars();
-    } else {
-      className = 'wrong';
-    }
-
-    setLastWord((setLastWord) => setLastWord + keyEvent?.key);
-    updateCharClassMap(wordIndex, charIndex, className);
-    setCharIndex((charIndex) => charIndex + 1);
-  };
-
-  const updateCharClassMap = (wordIndex: number, charIndex: number, className: string) => {
-    setCharClassMap((charClassMap) => ({ ...charClassMap, [`${wordIndex},${charIndex}`]: className }));
-  };
-
-  const handleBackspace = () => {
-    setLastWord((lastWord) => lastWord.substring(0, lastWord.length - 1));
-    setCharIndex((charIndex) => charIndex - 1);
-    updateCharClassMap(wordIndex, charIndex - 1, '');
-  };
-
-  const handleSpaceBar = () => {
-    if (words[wordIndex] === lastWord.trim()) {
-      upCorrectWords();
-    } else {
-      upIncorrectWords();
-      const wordLength = words[wordIndex].length;
-      for (let i = 0; i < wordLength; i++) {
-        updateCharClassMap(wordIndex, i, 'wrong');
-      }
-    }
-
-    setLastWord('');
-    setCharIndex(0);
+  const handleSpaceBar = useCallback(() => {
+    const trimmedInput = input.trim();
+    const currentWord = words[wordIndex];
+    const isMatch = currentWord === trimmedInput;
     setWordIndex((wordIndex) => wordIndex + 1);
+
+    if (isMatch) {
+      const correctChars = calculateCorrectChars(trimmedInput, currentWord);
+      updateTypingResult({
+        ...typingResult,
+        correctCharsNumber: correctChars,
+        correctWords: new Set([...Array.from(typingResult.correctWords), currentWord])
+      });
+    } else {
+      updateTypingResult({
+        ...typingResult,
+        inCorrectWords: new Set([...Array.from(typingResult.inCorrectWords), currentWord])
+      });
+    }
+  }, [words, wordIndex, input, typingResult, updateTypingResult]);
+
+  const calculateCorrectChars = (input: string, word: string) => {
+    let correctChars = 0;
+
+    for (let currCharIndex = 0; currCharIndex < word.length; currCharIndex++) {
+      if (input[currCharIndex] === word[currCharIndex]) {
+        correctChars++;
+      }
+    }
+    return correctChars;
   };
 
-  const getClassByMap = (wordIndex: number, charIndex: number) => charClassMap[`${wordIndex},${charIndex}`];
+  useEffect(() => {
+    if (input.at(-1) === ' ') {
+      handleSpaceBar();
+    }
+  }, [input, handleSpaceBar]);
 
   return (
     <div className="word-list-container">
-      {words.map((word, wordIndex) => (
-        <div key={wordIndex} className="word">
-          {word.split('').map((char, charIndex) => (
-            <span key={charIndex} className={getClassByMap(wordIndex, charIndex)}>
-              {char}
-            </span>
-          ))}
-          &nbsp;
-        </div>
+      {words.map((word, currWordIndex) => (
+        <Word
+          key={currWordIndex}
+          input={input}
+          word={word}
+          wordIndex={currWordIndex}
+          isCurrentWord={currWordIndex === wordIndex}
+          isPastWord={currWordIndex < wordIndex}
+        />
       ))}
     </div>
   );
