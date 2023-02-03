@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useCallback, useContext } from 'react';
 import WORDS_ASSET from '../../assets/words.json';
 import { TypingResultContext } from '../../common/typingResultContext';
@@ -11,9 +9,9 @@ interface WordListProps {
   input: string;
 }
 
-const WordList: React.FC<WordListProps> = ({ isGameActive, input }) => {
+const WordList: React.FC<WordListProps> = ({ input }) => {
   const [wordIndex, setWordIndex] = useState(0);
-  const [words, setWords] = useState(WORDS_ASSET);
+  const [words] = useState(WORDS_ASSET.sort(() => Math.random() - 0.5));
   const { typingResult, updateTypingResult } = useContext(TypingResultContext);
 
   const handleSpaceBar = useCallback(() => {
