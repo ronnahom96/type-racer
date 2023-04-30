@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState, FC } from 'react';
 
 interface TimerProps {
   isShouldTimerStart: boolean;
@@ -7,7 +7,7 @@ interface TimerProps {
   timeoutHandler: () => void;
 }
 
-function Timer({ isShouldTimerStart, seconds, timeoutHandler }: TimerProps) {
+const Timer: FC<TimerProps> = ({ isShouldTimerStart, seconds, timeoutHandler }) => {
   const [timer, setTimer] = useState(seconds);
 
   useLayoutEffect(() => {
@@ -36,13 +36,11 @@ function Timer({ isShouldTimerStart, seconds, timeoutHandler }: TimerProps) {
     }
   }, [timer, timeoutHandler]);
 
-  return (
-    isShouldTimerStart && (
-      <Typography variant="h4" margin={1}>
-        Timer: {timer}
-      </Typography>
-    )
-  );
-}
+  return isShouldTimerStart ? (
+    <Typography variant="h4" margin={1}>
+      Timer: {timer}
+    </Typography>
+  ) : null;
+};
 
 export default Timer;
