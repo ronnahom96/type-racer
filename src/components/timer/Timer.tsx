@@ -11,8 +11,9 @@ const Timer: React.FC<TimerProps> = ({ isShouldTimerStart, seconds, timeoutHandl
   const [timer, setTimer] = useState(seconds);
 
   useEffect(() => {
+    let interval;
     if (isShouldTimerStart) {
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         setTimer((prevTimeVal) => {
           if (prevTimeVal > 0) {
             return prevTimeVal - 1;
